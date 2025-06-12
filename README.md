@@ -16,7 +16,25 @@ https://docs.csc.fi/computing/containers/creating/#building-a-container-without-
 The goal is to take a relatively complex real-world container and see
 how far we get with only fakeroot and no user namespaces.
 
+The [container recipe](pytorch_2.6_csc.def) is slightly modified from
+the one used to create the
+[pytorch/2.6](https://docs.csc.fi/apps/pytorch/) module on
+Puhti. Modifications mainly needed to fix Python version changes since
+it was originally used.
+
+An important point seems to be that it uses Rocky Linux 8.10 as a
+base, the same operating system as Puhti uses:
+
+```console
+Bootstrap: docker
+From: rockylinux/rockylinux:8.10
+```
+
 ## Starting
+
+Instead of building on a login node I'm using an interactive session
+in a compute node. The reason is that the memory is too limited on the
+login node.
 
 ```bash
 $ sinteractive -A project_2001659 -c 8 -d 100 -m 32G -t 8:00:00
@@ -84,6 +102,9 @@ OSError: [Errno 28] No space left on device
 I learned that the apptainer build process does not inherit `$TMPDIR`
 from the shell's environment, and pip needs somewhere to temporarily
 store huge downloads.
+
+The easiest solution seems to be to just bind an appropriate place to
+`/tmp` inside the container:
 
 ```bash
 apptainer build --bind=$TMPDIR:/tmp ...
