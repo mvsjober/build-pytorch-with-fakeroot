@@ -200,7 +200,7 @@ From: rockylinux/rockylinux:8.10
 
   # litgpt 0.5.7 not supporting PyTorch 2.6.0 yet
   # pip install litgpt[all]
-  pip install vllm== v0.8.5.post1
+  pip install vllm==v0.8.5.post1
   # # pip install vllm --pre --extra-index-url https://wheels.vllm.ai/nightly
   
   pip install flash-attn --no-build-isolation
