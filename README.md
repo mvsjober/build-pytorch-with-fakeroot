@@ -36,7 +36,7 @@ Instead of building on a login node I'm using an interactive session
 in a compute node. The reason is that the memory is too limited on the
 login node.
 
-```bash
+```console
 $ sinteractive -A project_2001659 -c 8 -d 100 -m 32G -t 8:00:00
 $ echo $TMPDIR
 /run/nvme/job_28502350/tmp
@@ -53,7 +53,7 @@ INFO:    Starting build...
 
 ## Problem with rpm packages adding users
 
-```bash
+```console
   Running scriptlet: unbound-libs-1.16.2-5.8.el8_10.x86_64
 groupadd: failure while writing changes to /etc/group
 useradd: group 'unbound' does not exist
@@ -68,7 +68,7 @@ Solution: we fake it by replacing `groupadd` and `useradd` commands
 with commands that always return true - making the calling programs
 assume everything worked fine, even though they do nothing.
 
-```bash
+```console
 %post
   cp /usr/bin/true /usr/sbin/groupadd
   cp /usr/bin/true /usr/sbin/useradd
@@ -78,7 +78,7 @@ assume everything worked fine, even though they do nothing.
 
 (Not related to fakeroot, but building on Puhti in general.)
 
-```bash
+```console
 Downloading https://download.pytorch.org/whl/cu124/torch-2.6.0%2Bcu124-cp312-cp312-linux_x86_64.whl (768.4 MB)
    ━━━━━╺━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100.7/768.4 MB 342.1 MB/s eta 0:00:02
 ERROR: Exception:
@@ -106,6 +106,27 @@ store huge downloads.
 The easiest solution seems to be to just bind an appropriate place to
 `/tmp` inside the container:
 
-```bash
+```console
 apptainer build --bind=$TMPDIR:/tmp ...
 ```
+
+## Success
+
+```console
+INFO:    Adding labels
+INFO:    Adding environment to container
+INFO:    Creating SIF file...
+INFO:    Build complete: pytorch_2.6_csc.sif
+```
+
+## Resource usage
+
+```console
+Memory Utilized: 17.80 GB
+```
+
+## Testing
+
+I ran [my normal benchmarks](https://github.com/mvsjober/ml-benchmarks) 
+and everything looks good: PyTorch DataDistributed with 4 GPUs, 8 GPUs 
+(2 nodes) and also DeepSpeed with 8 GPUs, which uses MPI, works!
