@@ -122,7 +122,14 @@ INFO:    Build complete: pytorch_2.6_csc.sif
 ## Resource usage
 
 ```console
-Memory Utilized: 17.80 GB
+$ seff 28508499
+...
+Cores per node: 10
+CPU Utilized: 04:08:40
+CPU Efficiency: 46.73% of 08:52:10 core-walltime
+Job Wall-clock time: 00:53:13
+Memory Utilized: 23.09 GB
+...
 ```
 
 ## Testing
